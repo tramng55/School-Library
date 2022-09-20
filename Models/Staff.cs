@@ -6,5 +6,7 @@
         public string NameStaff { get; set; }
         public string Dayofbirth { get; set; }
         public string PhoneNumber { get; set; }
+
+        public Checkin_out Checkin_out { get; set; }
     }
 }
