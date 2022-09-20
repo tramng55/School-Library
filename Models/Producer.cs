@@ -7,6 +7,7 @@
         public string Address { get; set; }
         public string Email { get; set; }
         public string Status { get; set; }
+
         public ICollection<Book> Books { get; set; }
 
     }

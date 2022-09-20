@@ -4,7 +4,8 @@
     {
         public int BookID { get; set; }
         public int StudentID { get; set; }
-        public string NameBook { get; set; }
+        public string Status { get; set; }
+
         public Book Book { get; set; }
         public Student Student { get; set; }
 
