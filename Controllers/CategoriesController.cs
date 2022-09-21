@@ -22,18 +22,18 @@ namespace School_Library.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Categorys.ToListAsync());
+            return View(await _context.Categories.ToListAsync());
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Categorys == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categorys
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.CategoryID == id);
             if (category == null)
             {
@@ -68,12 +68,12 @@ namespace School_Library.Controllers
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Categorys == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categorys.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -119,12 +119,12 @@ namespace School_Library.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Categorys == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categorys
+            var category = await _context.Categories
                 .FirstOrDefaultAsync(m => m.CategoryID == id);
             if (category == null)
             {
@@ -139,23 +139,23 @@ namespace School_Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Categorys == null)
+            if (_context.Categories == null)
             {
                 return Problem("Entity set 'School_LibraryDbContext.Categorys'  is null.");
             }
-            var category = await _context.Categorys.FindAsync(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category != null)
             {
-                _context.Categorys.Remove(category);
+                _context.Categories.Remove(category);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-          return _context.Categorys.Any(e => e.CategoryID == id);
+            return _context.Categories.Any(e => e.CategoryID == id);
         }
     }
 }

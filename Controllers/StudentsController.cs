@@ -22,7 +22,7 @@ namespace School_Library.Controllers
         // GET: Students
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Students.ToListAsync());
+            return View(await _context.Students.ToListAsync());
         }
 
         // GET: Students/Details/5
@@ -148,14 +148,14 @@ namespace School_Library.Controllers
             {
                 _context.Students.Remove(student);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StudentExists(int id)
         {
-          return _context.Students.Any(e => e.StudentID == id);
+            return _context.Students.Any(e => e.StudentID == id);
         }
     }
 }

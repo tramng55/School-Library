@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
 
@@ -20,10 +21,39 @@ namespace School_Library.Controllers
         }
 
         // GET: Books
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            var school_LibraryDbContext = _context.Books.Include(b => b.Category);
-            return View(await school_LibraryDbContext.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+
+            var books = from s in _context.Books
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.NameBook.Contains(searchString));
+                                       
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    books = books.OrderByDescending(s => s.NameBook);
+                    break;
+                default:
+                    books = books.OrderBy(s => s.NameBook);
+                    break;
+            }
+            int pageSize = 10;
+            return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
 
         // GET: Books/Details/5
@@ -35,7 +65,7 @@ namespace School_Library.Controllers
             }
 
             var book = await _context.Books
-                .Include(b => b.Category)
+                .Include(b => b.Categories)
                 .FirstOrDefaultAsync(m => m.BookID == id);
             if (book == null)
             {
@@ -48,7 +78,7 @@ namespace School_Library.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Categorys, "CategoryID", "CategoryID");
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID");
             return View();
         }
 
@@ -65,7 +95,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categorys, "CategoryID", "CategoryID", book.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID", book.CategoryID);
             return View(book);
         }
 
@@ -82,7 +112,7 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categorys, "CategoryID", "CategoryID", book.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID", book.CategoryID);
             return View(book);
         }
 
@@ -118,7 +148,7 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categorys, "CategoryID", "CategoryID", book.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID", book.CategoryID);
             return View(book);
         }
 
@@ -131,7 +161,7 @@ namespace School_Library.Controllers
             }
 
             var book = await _context.Books
-                .Include(b => b.Category)
+                .Include(b => b.Categories)
                 .FirstOrDefaultAsync(m => m.BookID == id);
             if (book == null)
             {
@@ -155,14 +185,14 @@ namespace School_Library.Controllers
             {
                 _context.Books.Remove(book);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BookExists(int id)
         {
-          return _context.Books.Any(e => e.BookID == id);
+            return _context.Books.Any(e => e.BookID == id);
         }
     }
 }
