@@ -9,7 +9,6 @@ namespace School_Library.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BookID { get; set; }
         public int CategoryID { get; set; }
-        
         public string NameBook { get; set; }
         
         //public ICollection<Author> Authors { get; set; }

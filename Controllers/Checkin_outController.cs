@@ -23,6 +23,7 @@ namespace School_Library
         public async Task<IActionResult> Index()
         {
             var school_LibraryDbContext = _context.Checkin_outs.Include(c => c.Staff).Include(c => c.Student);
+           
             return View(await school_LibraryDbContext.ToListAsync());
         }
 
@@ -77,7 +78,7 @@ namespace School_Library
                 return NotFound();
             }
 
-            var checkin_out = await _context.Checkin_outs.FindAsync(id);
+            var checkin_out = await _context.Checkin_outs.FirstOrDefaultAsync(x => x.Checkin_outID == id);
             if (checkin_out == null)
             {
                 return NotFound();

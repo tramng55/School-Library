@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School_Library.Data;
 
@@ -11,9 +12,10 @@ using School_Library.Data;
 namespace School_Library.Migrations
 {
     [DbContext(typeof(School_LibraryDbContext))]
-    partial class School_LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220923034237_Add_Model12")]
+    partial class Add_Model12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,12 +105,6 @@ namespace School_Library.Migrations
                     b.Property<int>("BookID")
                         .HasColumnType("int");
 
-                    b.Property<int>("BorrowAssignmentID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BorrowAssignmentID"), 1L, 1);
-
                     b.Property<string>("NameBook")
                         .HasColumnType("nvarchar(max)");
 
@@ -147,9 +143,6 @@ namespace School_Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("StaffID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Checkin_outID")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("From")
