@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
 
@@ -20,10 +21,40 @@ namespace School_Library.Controllers
         }
 
         // GET: Categories
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            return View(await _context.Categories.ToListAsync());
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+            ViewData["CurrentFilter"] = searchString;
+
+            var categories = _context.Categories.Include(x => x.Books).AsQueryable();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                categories = categories.Where(s => s.NameCategory.Contains(searchString));
+
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    categories = categories.OrderByDescending(s => s.NameCategory);
+                    break;
+                default:
+                    categories = categories.OrderBy(s => s.NameCategory);
+                    break;
+            }
+            int pageSize = 10;
+            return View(await PaginatedList<Category>.CreateAsync(categories.AsNoTracking(), pageNumber ?? 1, pageSize));
+
         }
+
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -22,9 +22,14 @@
 <table class="table">
     <thead>
         <tr>
-
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Book</a>
+            </th>
+            <th>
+                BookID
+            </th>
+            <th>
+                CategoryID
             </th>
             <th></th>
         </tr>
@@ -33,9 +38,16 @@
         @foreach (var item in Model)
         {
             <tr>
-
                 <td>
                     @Html.DisplayFor(modelItem => item.NameBook)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookID)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.CategoryID)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.BookID">Edit</a> |
@@ -65,3 +77,17 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
+
+
+
+
+
+
+
+
+    
+
+
+
+
+

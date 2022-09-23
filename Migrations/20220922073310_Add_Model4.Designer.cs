@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School_Library.Data;
 
@@ -11,9 +12,10 @@ using School_Library.Data;
 namespace School_Library.Migrations
 {
     [DbContext(typeof(School_LibraryDbContext))]
-    partial class School_LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220922073310_Add_Model4")]
+    partial class Add_Model4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,6 +37,24 @@ namespace School_Library.Migrations
                     b.HasIndex("ProducersProducerID");
 
                     b.ToTable("BookProducer");
+                });
+
+            modelBuilder.Entity("Checkin_outStudent", b =>
+                {
+                    b.Property<int>("StudentsStudentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Checkin_outStudentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Checkin_outStaffID")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentsStudentID", "Checkin_outStudentID", "Checkin_outStaffID");
+
+                    b.HasIndex("Checkin_outStudentID", "Checkin_outStaffID");
+
+                    b.ToTable("Checkin_outStudent");
                 });
 
             modelBuilder.Entity("School_Library.Models.Author", b =>
@@ -140,12 +160,16 @@ namespace School_Library.Migrations
                     b.Property<DateTime>("From")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("To")
                         .HasColumnType("datetime2");
 
                     b.HasKey("StudentID", "StaffID");
 
-                    b.HasIndex("StaffID");
+                    b.HasIndex("StaffID")
+                        .IsUnique();
 
                     b.ToTable("Checkin_out", (string)null);
                 });
@@ -234,6 +258,21 @@ namespace School_Library.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Checkin_outStudent", b =>
+                {
+                    b.HasOne("School_Library.Models.Student", null)
+                        .WithMany()
+                        .HasForeignKey("StudentsStudentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("School_Library.Models.Checkin_out", null)
+                        .WithMany()
+                        .HasForeignKey("Checkin_outStudentID", "Checkin_outStaffID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("School_Library.Models.AuthorBook", b =>
                 {
                     b.HasOne("School_Library.Models.Author", "Author")
@@ -273,7 +312,7 @@ namespace School_Library.Migrations
                         .IsRequired();
 
                     b.HasOne("School_Library.Models.Student", "Student")
-                        .WithMany("BorrowAssignments")
+                        .WithMany("BorrowAssignment")
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -286,20 +325,12 @@ namespace School_Library.Migrations
             modelBuilder.Entity("School_Library.Models.Checkin_out", b =>
                 {
                     b.HasOne("School_Library.Models.Staff", "Staff")
-                        .WithMany("Checkin_outs")
-                        .HasForeignKey("StaffID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("School_Library.Models.Student", "Student")
-                        .WithMany("Checkin_outs")
-                        .HasForeignKey("StudentID")
+                        .WithOne("Checkin_out")
+                        .HasForeignKey("School_Library.Models.Checkin_out", "StaffID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Staff");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("School_Library.Models.Author", b =>
@@ -321,14 +352,12 @@ namespace School_Library.Migrations
 
             modelBuilder.Entity("School_Library.Models.Staff", b =>
                 {
-                    b.Navigation("Checkin_outs");
+                    b.Navigation("Checkin_out");
                 });
 
             modelBuilder.Entity("School_Library.Models.Student", b =>
                 {
-                    b.Navigation("BorrowAssignments");
-
-                    b.Navigation("Checkin_outs");
+                    b.Navigation("BorrowAssignment");
                 });
 #pragma warning restore 612, 618
         }

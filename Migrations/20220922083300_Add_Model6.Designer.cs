@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using School_Library.Data;
 
@@ -11,9 +12,10 @@ using School_Library.Data;
 namespace School_Library.Migrations
 {
     [DbContext(typeof(School_LibraryDbContext))]
-    partial class School_LibraryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220922083300_Add_Model6")]
+    partial class Add_Model6
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -145,7 +147,11 @@ namespace School_Library.Migrations
 
                     b.HasKey("StudentID", "StaffID");
 
-                    b.HasIndex("StaffID");
+                    b.HasIndex("StaffID")
+                        .IsUnique();
+
+                    b.HasIndex("StudentID")
+                        .IsUnique();
 
                     b.ToTable("Checkin_out", (string)null);
                 });
@@ -273,7 +279,7 @@ namespace School_Library.Migrations
                         .IsRequired();
 
                     b.HasOne("School_Library.Models.Student", "Student")
-                        .WithMany("BorrowAssignments")
+                        .WithMany("BorrowAssignment")
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -286,14 +292,14 @@ namespace School_Library.Migrations
             modelBuilder.Entity("School_Library.Models.Checkin_out", b =>
                 {
                     b.HasOne("School_Library.Models.Staff", "Staff")
-                        .WithMany("Checkin_outs")
-                        .HasForeignKey("StaffID")
+                        .WithOne("Checkin_out")
+                        .HasForeignKey("School_Library.Models.Checkin_out", "StaffID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("School_Library.Models.Student", "Student")
-                        .WithMany("Checkin_outs")
-                        .HasForeignKey("StudentID")
+                        .WithOne("Checkin_out")
+                        .HasForeignKey("School_Library.Models.Checkin_out", "StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -321,14 +327,14 @@ namespace School_Library.Migrations
 
             modelBuilder.Entity("School_Library.Models.Staff", b =>
                 {
-                    b.Navigation("Checkin_outs");
+                    b.Navigation("Checkin_out");
                 });
 
             modelBuilder.Entity("School_Library.Models.Student", b =>
                 {
-                    b.Navigation("BorrowAssignments");
+                    b.Navigation("BorrowAssignment");
 
-                    b.Navigation("Checkin_outs");
+                    b.Navigation("Checkin_out");
                 });
 #pragma warning restore 612, 618
         }

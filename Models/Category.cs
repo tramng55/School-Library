@@ -10,8 +10,9 @@ namespace School_Library.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CategoryID { get; set; }
 
-        [DisplayName("Name")]
         public string NameCategory { get; set; }
+
+        [DisplayName("Name")]
         public ICollection<Book> Books { get; set; }
     }
 }
