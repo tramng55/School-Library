@@ -9,7 +9,6 @@ namespace School_Library.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int CategoryID { get; set; }
-
         public string NameCategory { get; set; }
 
         [DisplayName("Name")]

@@ -35,8 +35,7 @@ namespace School_Library.Controllers
             }
             ViewData["CurrentFilter"] = searchString;
 
-            var books = from s in _context.Books
-                           select s;
+            var books = _context.Books.Include(x => x.Category).AsQueryable();
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.NameBook.Contains(searchString));
@@ -65,8 +64,9 @@ namespace School_Library.Controllers
             }
 
             var book = await _context.Books
-                .Include(b => b.Categories)
+                .Include(b => b.Category)
                 .FirstOrDefaultAsync(m => m.BookID == id);
+
             if (book == null)
             {
                 return NotFound();
@@ -161,7 +161,7 @@ namespace School_Library.Controllers
             }
 
             var book = await _context.Books
-                .Include(b => b.Categories)
+                .Include(b => b.Category)
                 .FirstOrDefaultAsync(m => m.BookID == id);
             if (book == null)
             {
@@ -194,5 +194,6 @@ namespace School_Library.Controllers
         {
             return _context.Books.Any(e => e.BookID == id);
         }
+
     }
 }

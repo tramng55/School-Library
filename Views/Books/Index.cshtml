@@ -26,7 +26,7 @@
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Book</a>
             </th>
             <th>
-                NameCategory
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Category</a>
             </th>
             <th>
                 CategoryID
@@ -41,18 +41,18 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.NameBook)
                 </td>
-
                 <td>
-                    @Html.DisplayFor(modelItem => item.)
+                    @Html.DisplayFor(modelItem => item.Category.NameCategory)
                 </td>
-
                 <td>
                     @Html.DisplayFor(modelItem => item.CategoryID)
                 </td>
+                
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.BookID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.BookID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.BookID">Delete</a>
+                    <a asp-action="Delete" asp-route-id="@item.BookID">Delete</a> |
+                    <a asp-action="Add" asp-route-id="@item.BookID">Add</a>
                 </td>
             </tr>
         }
