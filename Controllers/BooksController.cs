@@ -39,7 +39,7 @@ namespace School_Library.Controllers
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.NameBook.Contains(searchString));
-                                       
+
             }
             switch (sortOrder)
             {
@@ -65,6 +65,10 @@ namespace School_Library.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Category)
+                .Include(x => x.AuthorBooks)
+                .ThenInclude(x => x.Author)
+                
+                
                 .FirstOrDefaultAsync(m => m.BookID == id);
 
             if (book == null)
@@ -78,7 +82,7 @@ namespace School_Library.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID");
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
             return View();
         }
 
@@ -95,7 +99,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID", book.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
             return View(book);
         }
 

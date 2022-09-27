@@ -65,6 +65,9 @@ namespace School_Library.Controllers
             }
 
             var category = await _context.Categories
+                .Include(x => x.Books)
+                
+
                 .FirstOrDefaultAsync(m => m.CategoryID == id);
             if (category == null)
             {
