@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.BookViewModel;
 
 namespace School_Library.Controllers
 {
@@ -35,7 +36,11 @@ namespace School_Library.Controllers
             }
             ViewData["CurrentFilter"] = searchString;
 
-            var books = _context.Books.Include(x => x.Category).AsQueryable();
+            var books = _context.Books.Include(x => x.Category)
+                .Include(x => x.AuthorBooks)
+                .ThenInclude(x => x.Author)
+                .AsQueryable();
+
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.NameBook.Contains(searchString));
@@ -51,14 +56,29 @@ namespace School_Library.Controllers
                     break;
             }
             int pageSize = 10;
+
+
+            var bookViewModel = await books.Select(book => new BookViewModel
+            {
+                BookID = book.BookID,
+                NameBook = book.NameBook,
+                Category = book.Category,
+                Authors = book.AuthorBooks.Select(authorBook => authorBook.Author).ToList()
+            }).ToListAsync();
+
+            ViewData["BookViewModel"] = bookViewModel;
+
+
             return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
+
 
         // GET: Books/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Books == null)
+
             {
                 return NotFound();
             }
@@ -67,11 +87,9 @@ namespace School_Library.Controllers
                 .Include(b => b.Category)
                 .Include(x => x.AuthorBooks)
                 .ThenInclude(x => x.Author)
-                
-                
                 .FirstOrDefaultAsync(m => m.BookID == id);
-
             if (book == null)
+
             {
                 return NotFound();
             }
@@ -116,7 +134,7 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID", book.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
             return View(book);
         }
 
@@ -152,7 +170,7 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID", book.CategoryID);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
             return View(book);
         }
 

@@ -65,6 +65,8 @@ namespace School_Library.Controllers
             }
 
             var author = await _context.Authors
+                .Include(x => x.AuthorBooks)
+                .ThenInclude(x => x.Book)
                 .FirstOrDefaultAsync(m => m.AuthorID == id);
             if (author == null)
             {

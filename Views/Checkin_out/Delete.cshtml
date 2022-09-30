@@ -11,24 +11,29 @@
     <h4>Checkin_out</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.To)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Student)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.To)
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Student.NameStudent)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.From)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.From)
-        </dd>
-       
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Staff)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Staff.StaffID)
+            @Html.DisplayFor(model => model.Staff.NameStaff)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.To)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.To)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.From)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.From)
         </dd>
     </dl>
     

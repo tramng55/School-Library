@@ -34,23 +34,26 @@
         <dd class="col-sm-10">
             <table class="table">
                 <tr>
-                    <th>Authors</th>
+                    <th>AuthorID</th>
                     <th>NameAuthor</th>
                 </tr>
                 @foreach (var item in Model.AuthorBooks)
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Author.NameAuthor)
-                        </td>
-                        <td>
                             @Html.DisplayFor(modelItem => item.Author.AuthorID)
                         </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Author.NameAuthor)
+                        </td>
                     </tr>
+                   
                 }
             </table>
+
         </dd>
-        
+       
+
     </dl>
 </div>
 <div>

@@ -12,6 +12,7 @@ namespace School_Library.Models
         public string NameBook { get; set; }
 
 
+
         //public ICollection<Author> Authors { get; set; }
         public Category Category { get; set; }
         public ICollection<AuthorBook> AuthorBooks { get; set; }

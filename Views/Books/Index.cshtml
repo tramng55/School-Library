@@ -1,8 +1,11 @@
 ﻿@using School_Library.Common
+@using School_Library.Models.BookViewModel
 @model PaginatedList<School_Library.Models.Book>
 
 @{
     ViewData["Title"] = "Index";
+
+    var bookViewModel = (List<BookViewModel>)ViewData["BookViewModel"];
 }
 
 <h1>Index</h1>
@@ -22,33 +25,32 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Book</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Category</a>
-            </th>
-            <th>
-                CategoryID
-            </th>
-            <th></th>
+            <th>BookID</th>
+            <th>NameBook</th>
+            <th>Category</th>
+            <th>Authors</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in bookViewModel)
         {
-            <tr>
+           
+            <tr class="">
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookID)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.NameBook)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category.NameCategory)
+                    @Html.DisplayFor(modelItem => item.Category)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CategoryID)
+                    @Html.DisplayFor(modelItem => item.Authors)
                 </td>
-                
+
                 <td>
+                  
                     <a asp-action="Edit" asp-route-id="@item.BookID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.BookID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.BookID">Delete</a> |
@@ -57,36 +59,5 @@
         }
     </tbody>
 </table>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>
-
-
-
-
-
-
-
-
-    
-
-
-
 
 

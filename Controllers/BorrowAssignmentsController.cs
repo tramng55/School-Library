@@ -37,7 +37,7 @@ namespace School_Library.Controllers
             var borrowAssignment = await _context.BorrowAssignments
                 .Include(b => b.Book)
                 .Include(b => b.Student)
-                .FirstOrDefaultAsync(m => m.StudentID == id);
+                .FirstOrDefaultAsync(m => m.BorrowAssignmentID == id);
             if (borrowAssignment == null)
             {
                 return NotFound();
@@ -70,7 +70,7 @@ namespace School_Library.Controllers
             }
             ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID", borrowAssignment.BookID);
             ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", borrowAssignment.StudentID);
-          
+
             return View(borrowAssignment);
         }
 
@@ -140,7 +140,7 @@ namespace School_Library.Controllers
             var borrowAssignment = await _context.BorrowAssignments
                 .Include(b => b.Book)
                 .Include(b => b.Student)
-                .FirstOrDefaultAsync(m => m.StudentID == id);
+                .FirstOrDefaultAsync(m => m.BorrowAssignmentID == id);
             if (borrowAssignment == null)
             {
                 return NotFound();
@@ -163,14 +163,14 @@ namespace School_Library.Controllers
             {
                 _context.BorrowAssignments.Remove(borrowAssignment);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BorrowAssignmentExists(int id)
         {
-          return _context.BorrowAssignments.Any(e => e.StudentID == id);
+            return _context.BorrowAssignments.Any(e => e.BorrowAssignmentID == id);
         }
     }
 }

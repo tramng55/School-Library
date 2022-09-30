@@ -12,8 +12,8 @@ using School_Library.Data;
 namespace School_Library.Migrations
 {
     [DbContext(typeof(School_LibraryDbContext))]
-    [Migration("20220920031559_ComplexDataModel")]
-    partial class ComplexDataModel
+    [Migration("20220928044408_Init_Database")]
+    partial class Init_Database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,34 +24,19 @@ namespace School_Library.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AuthorBook", b =>
-                {
-                    b.Property<int>("AuthorsAuthorID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BooksBookID")
-                        .HasColumnType("int");
-
-                    b.HasKey("AuthorsAuthorID", "BooksBookID");
-
-                    b.HasIndex("BooksBookID");
-
-                    b.ToTable("AuthorBook");
-                });
-
-            modelBuilder.Entity("BookCategory", b =>
+            modelBuilder.Entity("BookProducer", b =>
                 {
                     b.Property<int>("BooksBookID")
                         .HasColumnType("int");
 
-                    b.Property<int>("CategorysCategoryID")
+                    b.Property<int>("ProducersProducerID")
                         .HasColumnType("int");
 
-                    b.HasKey("BooksBookID", "CategorysCategoryID");
+                    b.HasKey("BooksBookID", "ProducersProducerID");
 
-                    b.HasIndex("CategorysCategoryID");
+                    b.HasIndex("ProducersProducerID");
 
-                    b.ToTable("BookCategory");
+                    b.ToTable("BookProducer");
                 });
 
             modelBuilder.Entity("School_Library.Models.Author", b =>
@@ -65,15 +50,36 @@ namespace School_Library.Migrations
                     b.Property<string>("NameAuthor")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
+                    b.Property<string>("NameBook")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Website")
+                    b.Property<string>("Status")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("AuthorID");
 
                     b.ToTable("Author", (string)null);
+                });
+
+            modelBuilder.Entity("School_Library.Models.AuthorBook", b =>
+                {
+                    b.Property<int>("AuthorID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BookID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AuthorBookID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorBookID"), 1L, 1);
+
+                    b.HasKey("AuthorID", "BookID");
+
+                    b.HasIndex("BookID");
+
+                    b.ToTable("AuthorBook", (string)null);
                 });
 
             modelBuilder.Entity("School_Library.Models.Book", b =>
@@ -84,38 +90,44 @@ namespace School_Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BookID"), 1L, 1);
 
-                    b.Property<int>("AuthorID")
-                        .HasColumnType("int");
-
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
 
-                    b.Property<string>("Namebook")
+                    b.Property<string>("NameBook")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProducerID")
-                        .HasColumnType("int");
 
                     b.HasKey("BookID");
 
-                    b.HasIndex("ProducerID");
+                    b.HasIndex("CategoryID");
 
                     b.ToTable("Book", (string)null);
                 });
 
-            modelBuilder.Entity("School_Library.Models.BookAssignment", b =>
+            modelBuilder.Entity("School_Library.Models.BorrowAssignment", b =>
                 {
-                    b.Property<int>("AuthorID")
+                    b.Property<int>("StudentID")
                         .HasColumnType("int");
 
                     b.Property<int>("BookID")
                         .HasColumnType("int");
 
-                    b.HasKey("AuthorID", "BookID");
+                    b.Property<int>("BorrowAssignmentID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NameBook")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameStudent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("StudentID", "BookID");
 
                     b.HasIndex("BookID");
 
-                    b.ToTable("BookAssignment", (string)null);
+                    b.ToTable("BorrowAssignment", (string)null);
                 });
 
             modelBuilder.Entity("School_Library.Models.Category", b =>
@@ -142,16 +154,18 @@ namespace School_Library.Migrations
                     b.Property<int>("StaffID")
                         .HasColumnType("int");
 
-                    b.Property<string>("From")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Checkin_outID")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("From")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("To")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("To")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("StudentID", "StaffID");
+
+                    b.HasIndex("StaffID");
 
                     b.ToTable("Checkin_out", (string)null);
                 });
@@ -189,12 +203,6 @@ namespace School_Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StaffID"), 1L, 1);
 
-                    b.Property<int?>("Checkin_outStaffID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Checkin_outStudentID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Dayofbirth")
                         .HasColumnType("nvarchar(max)");
 
@@ -205,8 +213,6 @@ namespace School_Library.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("StaffID");
-
-                    b.HasIndex("Checkin_outStudentID", "Checkin_outStaffID");
 
                     b.ToTable("Staff", (string)null);
                 });
@@ -219,16 +225,10 @@ namespace School_Library.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudentID"), 1L, 1);
 
-                    b.Property<int?>("Checkin_outStaffID")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Checkin_outStudentID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Dayofbirth")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameStaff")
+                    b.Property<string>("NameStudent")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -236,42 +236,10 @@ namespace School_Library.Migrations
 
                     b.HasKey("StudentID");
 
-                    b.HasIndex("Checkin_outStudentID", "Checkin_outStaffID");
-
                     b.ToTable("Student", (string)null);
                 });
 
-            modelBuilder.Entity("School_Library.Models.StudentAssignment", b =>
-                {
-                    b.Property<int>("StudentID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BookID")
-                        .HasColumnType("int");
-
-                    b.HasKey("StudentID", "BookID");
-
-                    b.HasIndex("BookID");
-
-                    b.ToTable("StudentAssignment", (string)null);
-                });
-
-            modelBuilder.Entity("AuthorBook", b =>
-                {
-                    b.HasOne("School_Library.Models.Author", null)
-                        .WithMany()
-                        .HasForeignKey("AuthorsAuthorID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("School_Library.Models.Book", null)
-                        .WithMany()
-                        .HasForeignKey("BooksBookID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("BookCategory", b =>
+            modelBuilder.Entity("BookProducer", b =>
                 {
                     b.HasOne("School_Library.Models.Book", null)
                         .WithMany()
@@ -279,32 +247,23 @@ namespace School_Library.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("School_Library.Models.Category", null)
-                        .WithMany()
-                        .HasForeignKey("CategorysCategoryID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("School_Library.Models.Book", b =>
-                {
                     b.HasOne("School_Library.Models.Producer", null)
-                        .WithMany("Books")
-                        .HasForeignKey("ProducerID")
+                        .WithMany()
+                        .HasForeignKey("ProducersProducerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("School_Library.Models.BookAssignment", b =>
+            modelBuilder.Entity("School_Library.Models.AuthorBook", b =>
                 {
                     b.HasOne("School_Library.Models.Author", "Author")
-                        .WithMany()
+                        .WithMany("AuthorBooks")
                         .HasForeignKey("AuthorID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("School_Library.Models.Book", "Book")
-                        .WithMany("BookAssignments")
+                        .WithMany("AuthorBooks")
                         .HasForeignKey("BookID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -314,32 +273,27 @@ namespace School_Library.Migrations
                     b.Navigation("Book");
                 });
 
-            modelBuilder.Entity("School_Library.Models.Staff", b =>
+            modelBuilder.Entity("School_Library.Models.Book", b =>
                 {
-                    b.HasOne("School_Library.Models.Checkin_out", "Checkin_out")
-                        .WithMany("Staffs")
-                        .HasForeignKey("Checkin_outStudentID", "Checkin_outStaffID");
+                    b.HasOne("School_Library.Models.Category", "Category")
+                        .WithMany("Books")
+                        .HasForeignKey("CategoryID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Checkin_out");
+                    b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("School_Library.Models.Student", b =>
-                {
-                    b.HasOne("School_Library.Models.Checkin_out", null)
-                        .WithMany("Students")
-                        .HasForeignKey("Checkin_outStudentID", "Checkin_outStaffID");
-                });
-
-            modelBuilder.Entity("School_Library.Models.StudentAssignment", b =>
+            modelBuilder.Entity("School_Library.Models.BorrowAssignment", b =>
                 {
                     b.HasOne("School_Library.Models.Book", "Book")
-                        .WithMany()
+                        .WithMany("BorrowAssignments")
                         .HasForeignKey("BookID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("School_Library.Models.Student", "Student")
-                        .WithMany("StudentAssignments")
+                        .WithMany("BorrowAssignments")
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -349,26 +303,52 @@ namespace School_Library.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("School_Library.Models.Book", b =>
-                {
-                    b.Navigation("BookAssignments");
-                });
-
             modelBuilder.Entity("School_Library.Models.Checkin_out", b =>
                 {
-                    b.Navigation("Staffs");
+                    b.HasOne("School_Library.Models.Staff", "Staff")
+                        .WithMany("Checkin_outs")
+                        .HasForeignKey("StaffID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Students");
+                    b.HasOne("School_Library.Models.Student", "Student")
+                        .WithMany("Checkin_outs")
+                        .HasForeignKey("StudentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("School_Library.Models.Producer", b =>
+            modelBuilder.Entity("School_Library.Models.Author", b =>
+                {
+                    b.Navigation("AuthorBooks");
+                });
+
+            modelBuilder.Entity("School_Library.Models.Book", b =>
+                {
+                    b.Navigation("AuthorBooks");
+
+                    b.Navigation("BorrowAssignments");
+                });
+
+            modelBuilder.Entity("School_Library.Models.Category", b =>
                 {
                     b.Navigation("Books");
                 });
 
+            modelBuilder.Entity("School_Library.Models.Staff", b =>
+                {
+                    b.Navigation("Checkin_outs");
+                });
+
             modelBuilder.Entity("School_Library.Models.Student", b =>
                 {
-                    b.Navigation("StudentAssignments");
+                    b.Navigation("BorrowAssignments");
+
+                    b.Navigation("Checkin_outs");
                 });
 #pragma warning restore 612, 618
         }

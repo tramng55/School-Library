@@ -67,6 +67,12 @@ namespace School_Library.Migrations
                     b.Property<int>("BookID")
                         .HasColumnType("int");
 
+                    b.Property<int>("AuthorBookID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AuthorBookID"), 1L, 1);
+
                     b.HasKey("AuthorID", "BookID");
 
                     b.HasIndex("BookID");
@@ -84,9 +90,6 @@ namespace School_Library.Migrations
 
                     b.Property<int>("CategoryID")
                         .HasColumnType("int");
-
-                    b.Property<string>("NameAuthor")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NameBook")
                         .HasColumnType("nvarchar(max)");
@@ -270,13 +273,13 @@ namespace School_Library.Migrations
 
             modelBuilder.Entity("School_Library.Models.Book", b =>
                 {
-                    b.HasOne("School_Library.Models.Category", "Categories")
+                    b.HasOne("School_Library.Models.Category", "Category")
                         .WithMany("Books")
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Categories");
+                    b.Navigation("Category");
                 });
 
             modelBuilder.Entity("School_Library.Models.BorrowAssignment", b =>

@@ -37,7 +37,8 @@ namespace School_Library
 
             var checkin_out = await _context.Checkin_outs
                 .Include(c => c.Staff)
-                .FirstOrDefaultAsync(m => m.StudentID == id);
+                .Include(c => c.Student)
+                .FirstOrDefaultAsync(m => m.Checkin_outID == id);
             if (checkin_out == null)
             {
                 return NotFound();
@@ -133,7 +134,9 @@ namespace School_Library
 
             var checkin_out = await _context.Checkin_outs
                 .Include(c => c.Staff)
-                .FirstOrDefaultAsync(m => m.StudentID == id);
+                .Include(c => c.Student)
+                
+                .FirstOrDefaultAsync(m => m.Checkin_outID == id);
             if (checkin_out == null)
             {
                 return NotFound();
@@ -163,7 +166,7 @@ namespace School_Library
 
         private bool Checkin_outExists(int id)
         {
-          return _context.Checkin_outs.Any(e => e.StudentID == id);
+          return _context.Checkin_outs.Any(e => e.Checkin_outID == id);
         }
     }
 }
