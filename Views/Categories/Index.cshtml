@@ -23,10 +23,10 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Category</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">CategoryID</a>
             </th>
             <th>
-                CategoryID
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Category</a>
             </th>
             <th>
                 Books
@@ -38,10 +38,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.NameCategory  )
+                    @Html.DisplayFor(modelItem => item.CategoryID  )
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.CategoryID  )
+                    @Html.DisplayFor(modelItem => item.NameCategory  )
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Books.Count )

@@ -63,11 +63,11 @@ namespace School_Library.Controllers
                 BookID = book.BookID,
                 NameBook = book.NameBook,
                 Category = book.Category,
-                Authors = book.AuthorBooks.Select(authorBook => authorBook.Author).ToList()
+                Authors = book.AuthorBooks
+                .Select(authorBook => authorBook.Author).ToList()
             }).ToListAsync();
 
-            ViewData["BookViewModel"] = bookViewModel;
-
+            ViewData["BookViewModel"] =  bookViewModel;
 
             return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
 
@@ -100,6 +100,9 @@ namespace School_Library.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
+            var authors = _context.Authors;
+
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "NameAuthor");
             ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
             return View();
         }
@@ -109,17 +112,30 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookID,CategoryID,ProducerID,NameBook")] Book book)
+        public async Task<IActionResult> Create(CreateBookViewModel createBookViewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(book);
+                ////_context.Add(createBookViewModel);
+                ///
+
+                var book = new Book();
+                book.CategoryID = createBookViewModel.CategoryID;
+                book.NameBook = createBookViewModel.NameBook;
+
+                
+                
+
+                _context.Books.Add(book);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
-            return View(book);
+
+           
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", createBookViewModel.CategoryID);
+            return View(createBookViewModel);
         }
+       
 
         // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -129,14 +145,20 @@ namespace School_Library.Controllers
                 return NotFound();
             }
 
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books
+                .Include(x => x.AuthorBooks)
+                .ThenInclude(x => x.Author)
+                .FirstOrDefaultAsync(m => m.BookID == id);
+
             if (book == null)
             {
                 return NotFound();
             }
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "NameBook", book.BookID);
             ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
             return View(book);
         }
+
 
         // POST: Books/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
