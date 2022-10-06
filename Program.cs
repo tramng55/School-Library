@@ -6,6 +6,9 @@ builder.Services.AddDbContext<School_LibraryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("School_LibraryDbContext") ?? throw new InvalidOperationException("Connection string 'School_LibraryDbContext' not found.")));
 
 
+builder.Services.AddRazorPages()
+    .AddRazorRuntimeCompilation();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 var app = builder.Build();

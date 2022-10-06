@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -77,6 +78,7 @@ namespace School_Library.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
             return View();
         }
 
@@ -93,6 +95,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", student.StudentID);
             return View(student);
         }
 
@@ -109,6 +112,7 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
             return View(student);
         }
 
@@ -144,6 +148,7 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", student.StudentID);
             return View(student);
         }
 

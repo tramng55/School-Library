@@ -50,6 +50,7 @@ namespace School_Library
         // GET: Checkin_out/Create
         public IActionResult Create()
         {
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
             ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID");
             return View();
         }

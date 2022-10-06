@@ -23,6 +23,9 @@
     <thead>
         <tr>
             <th>
+                StaffID
+            </th>
+            <th>
               <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Staff</a>
             </th>
             <th>
@@ -37,6 +40,10 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+
+            <td>
+                 @Html.DisplayFor(modelItem => item.StaffID)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NameStaff)
             </td>

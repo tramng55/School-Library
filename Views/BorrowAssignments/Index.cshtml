@@ -1,5 +1,4 @@
-﻿@using School_Library.Common
-@model PaginatedList<School_Library.Models.BorrowAssignment>
+﻿@model IEnumerable<School_Library.Models.BorrowAssignment>
 
 @{
     ViewData["Title"] = "Index";
@@ -10,26 +9,18 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
-            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Back to Full List</a>
-        </p>
-    </div>
-</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">StudentID</a>
+               StudentID
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Student</a>)
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Student</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">BookID</a>
+                BookID
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Book</a>
@@ -43,22 +34,22 @@
     <tbody>  
 @foreach (var item in Model) {
         <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Student.StudentID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Student.NameStudent)
-                </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Book.BookID)
-            </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Book.NameBook)
-                </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Student.StudentID)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Student.NameStudent)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Book.BookID)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Book.NameBook)
+             </td>
            
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.Status)
+             </td>
             <td>
                     <a asp-action="Edit" asp-route-id="@item.BorrowAssignmentID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.BorrowAssignmentID">Details</a> |
@@ -68,22 +59,3 @@
 }
     </tbody>
 </table>
-@{
-    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-}
-
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @prevDisabled">
-    Previous
-</a>
-<a asp-action="Index"
-   asp-route-sortOrder="@ViewData["CurrentSort"]"
-   asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@ViewData["CurrentFilter"]"
-   class="btn btn-default @nextDisabled">
-    Next
-</a>

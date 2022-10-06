@@ -77,6 +77,7 @@ namespace School_Library.Controllers
         // GET: Staffs/Create
         public IActionResult Create()
         {
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID");
             return View();
         }
 
@@ -93,6 +94,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", staff.StaffID);
             return View(staff);
         }
 
@@ -109,6 +111,7 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID");
             return View(staff);
         }
 
@@ -144,6 +147,7 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", staff.StaffID);
             return View(staff);
         }
 

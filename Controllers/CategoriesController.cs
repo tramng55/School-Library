@@ -79,6 +79,7 @@ namespace School_Library.Controllers
         // GET: Categories/Create
         public IActionResult Create()
         {
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID");
             return View();
         }
 
@@ -95,6 +96,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "CategoryID");
             return View(category);
         }
 

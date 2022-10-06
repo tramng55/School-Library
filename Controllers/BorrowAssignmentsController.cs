@@ -49,8 +49,8 @@ namespace School_Library.Controllers
         // GET: BorrowAssignments/Create
         public IActionResult Create()
         {
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "NameBook");
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent");
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
 
             return View();
         }

@@ -9,6 +9,7 @@ using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
 using School_Library.Models.BookViewModel;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace School_Library.Controllers
 {
@@ -67,7 +68,7 @@ namespace School_Library.Controllers
                 .Select(authorBook => authorBook.Author).ToList()
             }).ToListAsync();
 
-            ViewData["BookViewModel"] =  bookViewModel;
+            ViewData["BookViewModel"] = bookViewModel;
 
             return View(await PaginatedList<Book>.CreateAsync(books.AsNoTracking(), pageNumber ?? 1, pageSize));
 
@@ -116,26 +117,34 @@ namespace School_Library.Controllers
         {
             if (ModelState.IsValid)
             {
-                ////_context.Add(createBookViewModel);
-                ///
+                //_context.Add(createBookViewModel);
+
 
                 var book = new Book();
                 book.CategoryID = createBookViewModel.CategoryID;
                 book.NameBook = createBookViewModel.NameBook;
 
-                
-                
 
-                _context.Books.Add(book);
+                book.AuthorBooks = new List<AuthorBook>();
+                foreach (var item in createBookViewModel.AuthorIDs)
+                {
+                    var authorBook = new AuthorBook();
+                    authorBook.AuthorID = item;
+
+                    book.AuthorBooks.Add(authorBook);
+                }
+                await _context.Books.AddAsync(book);
+
+                //await _context.AuthorBooks.AddRangeAsync(authorbooks);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
 
-           
+
             ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", createBookViewModel.CategoryID);
             return View(createBookViewModel);
         }
-       
+
 
         // GET: Books/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -154,8 +163,9 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "NameBook", book.BookID);
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
+
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "NameAuthor");
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
             return View(book);
         }
 
@@ -174,6 +184,7 @@ namespace School_Library.Controllers
 
             if (ModelState.IsValid)
             {
+               
                 try
                 {
                     _context.Update(book);
@@ -206,6 +217,8 @@ namespace School_Library.Controllers
 
             var book = await _context.Books
                 .Include(b => b.Category)
+                .Include(x => x.AuthorBooks)
+                .ThenInclude(x => x.Author)
                 .FirstOrDefaultAsync(m => m.BookID == id);
             if (book == null)
             {

@@ -91,7 +91,7 @@ namespace School_Library.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(author);
+                await _context.AddAsync(author);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
