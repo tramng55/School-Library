@@ -87,7 +87,7 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AuthorID,NameAuthor,Website,Status")] Author author)
+        public async Task<IActionResult> Create( Author author)
         {
             if (ModelState.IsValid)
             {
@@ -111,6 +111,7 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID", author.AuthorID);
             return View(author);
         }
 
@@ -130,6 +131,8 @@ namespace School_Library.Controllers
             {
                 try
                 {
+                   
+
                     _context.Update(author);
                     await _context.SaveChangesAsync();
                 }

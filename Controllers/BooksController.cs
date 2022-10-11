@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
@@ -159,40 +160,56 @@ namespace School_Library.Controllers
                 .ThenInclude(x => x.Author)
                 .FirstOrDefaultAsync(m => m.BookID == id);
 
+
             if (book == null)
             {
                 return NotFound();
             }
 
             ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "NameAuthor");
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
-            return View(book);
-        }
 
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
+            return View();
+        }
 
         // POST: Books/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookID,CategoryID,ProducerID,NameBook")] Book book)
+        public async Task<IActionResult> Edit(int id, EditBookViewModel editBookViewModel)
         {
-            if (id != book.BookID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
-               
                 try
                 {
-                    _context.Update(book);
+                    var findBook = await _context.Books
+                          .Include(x => x.AuthorBooks)
+                          .FirstOrDefaultAsync(x => x.BookID == id);
+                    findBook.NameBook = editBookViewModel.NameBook;
+                   
+
+
+                    if (editBookViewModel.AuthorIDs.Count > 0)
+                    {
+                        foreach (var item in editBookViewModel.AuthorIDs)
+                        {
+                            var findAuthor = findBook.AuthorBooks.FirstOrDefault(x => x.AuthorBookID == item && x.BookID == findBook.BookID);
+                            if (findAuthor == null)
+                            {
+                                var authorBook = new AuthorBook();
+                                authorBook.AuthorID = item;
+                                findBook.AuthorBooks.Add(authorBook);
+                            }
+                        }
+                    }
+                    _context.Books.Update(findBook);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BookExists(book.BookID))
+                    if (!BookExists())
                     {
                         return NotFound();
                     }
@@ -203,9 +220,18 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", book.CategoryID);
-            return View(book);
+
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory", editBookViewModel.CategoryID);
+            return View(editBookViewModel);
         }
+
+        private bool BookExists()
+        {
+            throw new NotImplementedException();
+        }
+
+
+
 
         // GET: Books/Delete/5
         public async Task<IActionResult> Delete(int? id)
