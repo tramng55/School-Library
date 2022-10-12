@@ -148,7 +148,7 @@ namespace School_Library.Controllers
 
 
         // GET: Books/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id )
         {
             if (id == null || _context.Books == null)
             {
@@ -169,7 +169,7 @@ namespace School_Library.Controllers
             ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "NameAuthor");
 
             ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
-            return View();
+            return View(book);
         }
 
         // POST: Books/Edit/5
@@ -188,7 +188,6 @@ namespace School_Library.Controllers
                           .Include(x => x.AuthorBooks)
                           .FirstOrDefaultAsync(x => x.BookID == id);
                     findBook.NameBook = editBookViewModel.NameBook;
-                   
 
 
                     if (editBookViewModel.AuthorIDs.Count > 0)

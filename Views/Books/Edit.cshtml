@@ -1,9 +1,10 @@
-﻿@model School_Library.Models.BookViewModel.EditBookViewModel
+﻿@model School_Library.Models.Book
 
 @{
     ViewData["Title"] = "Edit";
 
     //var selectBooks = ViewData["BookID"] as SelectList;
+   
     //var selectAuthorBook = ViewData["AuthorID"] as SelectList;
 
 }
@@ -13,15 +14,14 @@
 <h4>Book</h4>
 
 @*@selectBooks.Count()*@
+
 @*@selectAuthorBook.Count()*@
-
-
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-           
+            
              <div class="form-group">
                 <label asp-for="CategoryID" class="control-label"></label>
                 <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
@@ -32,8 +32,8 @@
                 <span asp-validation-for="NameBook" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AuthorIDs" class="control-label"></label>
-                <select asp-for="AuthorIDs" class="form-control" asp-items="ViewBag.AuthorID"></select>
+                <label asp-for="AuthorBooks" class="control-label"></label>
+                <select asp-for="AuthorBooks" class="form-control" asp-items="ViewBag.AuthorID"></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.BookViewModel;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace School_Library.Controllers
 {
@@ -52,6 +54,9 @@ namespace School_Library.Controllers
                     break;
             }
             int pageSize = 10;
+
+
+
             return View(await PaginatedList<Author>.CreateAsync(authors.AsNoTracking(), pageNumber ?? 1, pageSize));
 
         }
@@ -79,7 +84,10 @@ namespace School_Library.Controllers
         // GET: Authors/Create
         public IActionResult Create()
         {
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID");
             return View();
+
+            
         }
 
         // POST: Authors/Create
@@ -95,6 +103,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+           
             return View(author);
         }
 
@@ -114,13 +123,12 @@ namespace School_Library.Controllers
             ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID", author.AuthorID);
             return View(author);
         }
-
         // POST: Authors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("AuthorID,NameAuthor,Website,Status")] Author author)
+        public async Task<IActionResult> Edit(int id,  Author author)
         {
             if (id != author.AuthorID)
             {
@@ -131,9 +139,11 @@ namespace School_Library.Controllers
             {
                 try
                 {
-                   
-
-                    _context.Update(author);
+                    var findAuthor = await _context.Authors.FindAsync(id);
+                    findAuthor.NameBook = author.NameBook;
+                    findAuthor.NameAuthor = author.NameAuthor;
+                    _context.Authors.Update(findAuthor);
+                    //_context.Update(author);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
