@@ -6,9 +6,11 @@
     ViewData["Title"] = "Index";
 
     var bookViewModel = (List<BookViewModel>)ViewData["BookViewModel"];
+
 }
 
 <h1>Index</h1>
+
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -22,6 +24,7 @@
         </p>
     </div>
 </form>
+
 <table class="table">
     <thead>
         <tr>
@@ -43,16 +46,22 @@
                     @Html.DisplayFor(modelItem => item.NameBook)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Category)
+                    @Html.DisplayFor(modelItem => item.Category.CategoryID) -  @Html.DisplayFor(modelItem => item.Category.NameCategory)
                 </td>
+                
                 <td>
                     @foreach (var author in item.Authors)
                     {
-                        @author.AuthorID   @author.NameAuthor
-                        
+
+                        @Html.Raw(author.AuthorID) @Html.Raw("-")  @Html.Raw(author.NameAuthor)
+
+                        <br />
                     }
                 </td>
+                @* <td>
+            @Html.Raw("<div>It works</div>") - @Html.Raw("<div>This does not work</div>")
 
+            </td>*@
                 <td>
 
                     <a asp-action="Edit" asp-route-id="@item.BookID">Edit</a> |
@@ -82,4 +91,3 @@
    class="btn btn-default @nextDisabled">
     Next
 </a>
-

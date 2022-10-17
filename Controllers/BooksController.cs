@@ -148,7 +148,7 @@ namespace School_Library.Controllers
 
 
         // GET: Books/Edit/5
-        public async Task<IActionResult> Edit(int? id )
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Books == null)
             {
@@ -166,11 +166,35 @@ namespace School_Library.Controllers
                 return NotFound();
             }
 
-            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "NameAuthor");
+            var authors = await _context.Authors.ToListAsync();
 
+            ViewData["AuthorID"] = new SelectList(authors, "AuthorID", "NameAuthor");
             ViewData["CategoryID"] = new SelectList(_context.Categories, "CategoryID", "NameCategory");
-            return View(book);
+
+            var editBookViewModel = new EditBookViewModel()
+            {
+                //Authors = book.AuthorBooks.Select(x => new EditAuthorBookViewModel
+                //{
+                //    Id = x.Author.AuthorID,
+                //    NameAuthor = x.Author.NameAuthor,
+                //    IsChecked = true
+                //}).ToList(),
+                Authors = authors.Select(x => new EditAuthorBookViewModel
+                {
+                    Id = x.AuthorID,
+                    NameAuthor = x.NameAuthor,
+                    IsChecked = book.AuthorBooks.Any(k => k.AuthorID == x.AuthorID)
+                }).ToList(),
+                CategoryID = book.CategoryID,
+                NameBook = book.NameBook
+            };
+
+            ViewData["SelectedAuthors"] = book.AuthorBooks.Select(x => x.Author).ToList();
+
+
+            return View(editBookViewModel);
         }
+
 
         // POST: Books/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -186,19 +210,20 @@ namespace School_Library.Controllers
                 {
                     var findBook = await _context.Books
                           .Include(x => x.AuthorBooks)
+                          .ThenInclude(x => x.Author)
                           .FirstOrDefaultAsync(x => x.BookID == id);
                     findBook.NameBook = editBookViewModel.NameBook;
 
 
-                    if (editBookViewModel.AuthorIDs.Count > 0)
+                    if (editBookViewModel.Authors.Count > 0)
                     {
-                        foreach (var item in editBookViewModel.AuthorIDs)
+                        foreach (var item in editBookViewModel.Authors)
                         {
-                            var findAuthor = findBook.AuthorBooks.FirstOrDefault(x => x.AuthorBookID == item && x.BookID == findBook.BookID);
+                            var findAuthor = findBook.AuthorBooks.FirstOrDefault(x => x.AuthorBookID == item.Id && x.BookID == findBook.BookID);
                             if (findAuthor == null)
                             {
                                 var authorBook = new AuthorBook();
-                                authorBook.AuthorID = item;
+                                authorBook.AuthorID = item.Id;
                                 findBook.AuthorBooks.Add(authorBook);
                             }
                         }
@@ -262,7 +287,10 @@ namespace School_Library.Controllers
             {
                 return Problem("Entity set 'School_LibraryDbContext.Books'  is null.");
             }
-            var book = await _context.Books.FindAsync(id);
+            var book = await _context.Books
+                .Include(x => x.AuthorBooks)
+                .ThenInclude(x => x.Author)
+                .FirstOrDefaultAsync(x => x.BookID == id);
             if (book != null)
             {
                 _context.Books.Remove(book);

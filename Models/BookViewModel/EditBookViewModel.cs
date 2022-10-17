@@ -7,6 +7,8 @@ namespace School_Library.Models.BookViewModel
         public int CategoryID { get; set; }
         public string NameBook { get; set; }
 
-        public List<int> AuthorIDs { get; set; }
+        public List<EditAuthorBookViewModel> Authors { get; set; }
+        
+        
     }
 }

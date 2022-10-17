@@ -64,11 +64,11 @@ namespace School_Library
         {
             if (ModelState.IsValid)
             {
-                _context.Add(checkin_out);
+                _context.Checkin_outs.Add(checkin_out);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", checkin_out.StaffID);
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "NameStaff", "NameStaff", checkin_out.StaffID);
             return View(checkin_out);
         }
 
