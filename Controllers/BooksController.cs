@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Operations;
 using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
@@ -217,18 +218,50 @@ namespace School_Library.Controllers
 
                     if (editBookViewModel.Authors.Count > 0)
                     {
-                        foreach (var item in editBookViewModel.Authors)
-                        {
-                            var findAuthor = findBook.AuthorBooks.FirstOrDefault(x => x.AuthorBookID == item.Id && x.BookID == findBook.BookID);
-                            if (findAuthor == null)
+                        editBookViewModel.Authors = editBookViewModel.Authors.Where(x => x.IsChecked == true).ToList();
+
+                        var dbAuthorsId = findBook.AuthorBooks.Select(x => x.AuthorID).ToList();
+                        var findAuthorExists = editBookViewModel.Authors
+                            .Where(x => dbAuthorsId.Contains(x.Id))
+                            .Select(x => x.Id)
+                            .ToList();
+                        var filterInDb = findBook.AuthorBooks.Where(x => !findAuthorExists.Contains(x.AuthorID))
+                            .Select(x => x.AuthorID)
+                            .ToList();
+                        var filterInView = editBookViewModel.Authors.Where(x => !dbAuthorsId.Contains(x.Id))
+                            .Select(x => x.Id)
+                            .ToList();
+
+                        foreach (var item in filterInDb)
+                          {
+                            var remove = findBook.AuthorBooks.FirstOrDefault(x => x.AuthorID == item );
+                            if (remove != null)
                             {
-                                var authorBook = new AuthorBook();
-                                authorBook.AuthorID = item.Id;
-                                findBook.AuthorBooks.Add(authorBook);
+                                findBook.AuthorBooks.Remove(remove);
                             }
                         }
+
+                        foreach (var item in filterInView)
+                        {
+                            var authorBook = new AuthorBook();
+                            authorBook.AuthorID = item;
+                            findBook.AuthorBooks.Add(authorBook);
+
+                        }
+
+                        //foreach (var item in editBookViewModel.Authors)
+                        //{ 
+                        //    var findAuthor = findBook.AuthorBooks.FirstOrDefault(x => x.AuthorBookID == item.Id && x.BookID == findBook.BookID);
+                        //    if (findAuthor == null)
+                        //    {
+                        //        var authorBook = new AuthorBook();
+                        //        authorBook.AuthorID = item.Id;
+                        //        findBook.AuthorBooks.Add(authorBook);                     
+                        //    }
+
+                        //}
                     }
-                    _context.Books.Update(findBook);
+                    _context.Books.Update(findBook); 
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

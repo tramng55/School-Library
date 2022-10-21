@@ -3,8 +3,8 @@
 @{
     ViewData["Title"] = "Edit";
 
-    var selectedAuthors = ViewData["SelectedAuthors"] as List<Author> ;
-    
+    var selectedAuthors = ViewData["SelectedAuthors"] as List<Author>;
+
 
     //var selectBooks = ViewData["BookID"] as SelectList;
 
@@ -15,7 +15,7 @@
 <h1>Edit</h1>
 
 <h4>Book</h4>
-id
+
 @*@selectBooks.Count()*@
 
 @*@selectAuthorBook.Count()*@
@@ -26,7 +26,7 @@ id
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+            
             <div class="form-group">
                 <label asp-for="CategoryID" class="control-label"></label>
                 <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
@@ -36,39 +36,45 @@ id
                 <input asp-for="NameBook" class="form-control" />
                 <span asp-validation-for="NameBook" class="text-danger"></span>
             </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>AuthorID</th>
+                        <th>NameAuthor</th>     
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.Authors.Count; ++i)
+                    @* @foreach (var author in Model.Authors)*@
+                    {
+                        <tr class="">
+                            <td>
+                                @Html.CheckBoxFor(model => model.Authors[i].IsChecked)
+                                <input asp-for="@Model.Authors[i].Id" type="hidden"/>
+                                @Html.DisplayFor(model => model.Authors[i].Id)
+                                @* @Html.CheckBoxFor(model => author.IsChecked)*@
+                                @* @Html.DisplayFor(modelItem => author.Id)*@
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => model.Authors[i].NameAuthor)
+                                <input asp-for="@Model.Authors[i].NameAuthor" type="hidden"/>
+                                @* @Html.DisplayFor(modelItem => author.NameAuthor)*@
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>AuthorID</th>
-            <th>NameAuthor</th>
-    </thead>
-    <tbody>
-        @foreach (var author in Model.Authors)
-        {
-            <tr class="">
-               <td>
-                    @Html.CheckBoxFor(model => author.IsChecked)
-                    @Html.DisplayFor(modelItem => author.Id)
-                    
-               </td>
-               <td>
-                    @Html.DisplayFor(modelItem => author.NameAuthor)
-               </td>
-                
-            </tr>
-        }
-    </tbody>
-</table>
+
 <div>
- <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to List</a>
 </div>
-   
+
 
 @section Scripts {
     @{
