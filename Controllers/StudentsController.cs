@@ -78,7 +78,7 @@ namespace School_Library.Controllers
         // GET: Students/Create
         public IActionResult Create()
         {
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent");
             return View();
         }
 
@@ -87,7 +87,7 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentID,NameStaff,Dayofbirth,PhoneNumber")] Student student)
+        public async Task<IActionResult> Create( Student student)
         {
             if (ModelState.IsValid)
             {
@@ -95,7 +95,7 @@ namespace School_Library.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", student.StudentID);
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent", student.StudentID);
             return View(student);
         }
 
@@ -112,7 +112,7 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent");
             return View(student);
         }
 
@@ -121,7 +121,7 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StudentID,NameStaff,Dayofbirth,PhoneNumber")] Student student)
+        public async Task<IActionResult> Edit(int id,  Student student)
         {
             if (id != student.StudentID)
             {
@@ -148,7 +148,7 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", student.StudentID);
+            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent", student.StudentID);
             return View(student);
         }
 

@@ -13,24 +13,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-               StudentID
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Student</a>
-            </th>
-            <th>
-                StaffID
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Staff</a>
-            </th>
-            <th>
-               To
-            </th>
-            <th>
-               From
-            </th>
+           <th> Student</th>
+           <th> Staff </th>
+           <th> To </th>
+           <th> From </th>
             <th></th>
         </tr>
     </thead>
@@ -39,16 +25,10 @@
 {
         <tr>
             <td>
-                  @Html.DisplayFor(modelItem => item.Student.StudentID)
+                    @Html.DisplayFor(modelItem => item.Student.StudentID) - @Html.DisplayFor(modelItem => item.Student.NameStudent)
             </td>
             <td>
-                  @Html.DisplayFor(modelItem => item.Student.NameStudent)
-            </td>
-            <td>
-                  @Html.DisplayFor(modelItem => item.Staff.StaffID)
-            </td>
-            <td>
-                  @Html.DisplayFor(modelItem => item.Staff.NameStaff)
+                    @Html.DisplayFor(modelItem => item.Staff.StaffID) - @Html.DisplayFor(modelItem => item.Staff.NameStaff)
             </td>
             <td>
                   @Html.DisplayFor(modelItem => item.To)

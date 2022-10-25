@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.BookViewModel;
 
 namespace School_Library.Controllers
 {
@@ -49,8 +50,12 @@ namespace School_Library.Controllers
         // GET: BorrowAssignments/Create
         public IActionResult Create()
         {
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID");
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
+
+            List<EditBorrowAssignment> status = new List<EditBorrowAssignment>();
+            
+                
+            ViewData["BookID"] = new SelectList(_context.Books, "NameBook", "NameBook");
+            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent");
 
             return View();
         }
@@ -60,16 +65,18 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BookID,StudentID,Status")] BorrowAssignment borrowAssignment)
+        public async Task<IActionResult> Create( BorrowAssignment borrowAssignment)
         {
             if (ModelState.IsValid)
             {
+                
+
                 _context.Add(borrowAssignment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID", borrowAssignment.BookID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", borrowAssignment.StudentID);
+            ViewData["BookID"] = new SelectList(_context.Books, "NameBook", "NameBook", borrowAssignment.BookID);
+            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent", borrowAssignment.StudentID);
 
             return View(borrowAssignment);
         }

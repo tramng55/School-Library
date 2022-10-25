@@ -159,7 +159,7 @@ namespace School_Library.Controllers
             var book = await _context.Books
                 .Include(x => x.AuthorBooks)
                 .ThenInclude(x => x.Author)
-                .FirstOrDefaultAsync(m => m.BookID == id);
+                .FirstOrDefaultAsync(m => m.BookID == id);  
 
 
             if (book == null)

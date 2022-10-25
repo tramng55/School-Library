@@ -20,25 +20,19 @@
             </p>
         </div>
     </form>
+<table class="table">
     <thead>
         <tr>
-            <th>
-                AuthorID
-            </th>
-            <th>
-                Name Author
-            </th>
-            <th>
-                Name Book
-            </th>
-            <th>
-                Status
-            </th>
+            <th> AuthorID </th>
+            <th> NameAuthor </th>
+            <th> NameBook </th>
+            <th> Status </th>
         </tr>
      
     </thead>
     <tbody>
-@foreach (var item in Model) {
+       @foreach (var item in Model) 
+     {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.AuthorID)
@@ -58,8 +52,10 @@
                 <a asp-action="Delete" asp-route-id="@item.AuthorID">Delete</a>
             </td>
         </tr>
-}
+        }
+
     </tbody>
+    </table>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";

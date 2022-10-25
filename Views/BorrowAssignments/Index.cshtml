@@ -13,21 +13,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
-               StudentID
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Student</a>
-            </th>
-            <th>
-                BookID
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name Book</a>
-            </th>
-            <th>
-                Status
-            </th>
+            <th> Student </th>
+            <th> Book </th>
+            <th> Status </th>
             <th></th>
         </tr>
     </thead>
@@ -35,20 +23,13 @@
 @foreach (var item in Model) {
         <tr>
              <td>
-                 @Html.DisplayFor(modelItem => item.Student.StudentID)
+                    @Html.DisplayFor(modelItem => item.Student.StudentID) - @Html.DisplayFor(modelItem => item.Student.NameStudent)
              </td>
              <td>
-                 @Html.DisplayFor(modelItem => item.Student.NameStudent)
+                    @Html.DisplayFor(modelItem => item.Book.BookID) - @Html.DisplayFor(modelItem => item.Book.NameBook)
              </td>
              <td>
-                 @Html.DisplayFor(modelItem => item.Book.BookID)
-             </td>
-             <td>
-                 @Html.DisplayFor(modelItem => item.Book.NameBook)
-             </td>
-           
-             <td>
-                 @Html.DisplayFor(modelItem => item.Status)
+                    @Html.DisplayFor(modelItem => item.Status)
              </td>
             <td>
                     <a asp-action="Edit" asp-route-id="@item.BorrowAssignmentID">Edit</a> |

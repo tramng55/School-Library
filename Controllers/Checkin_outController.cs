@@ -23,6 +23,7 @@ namespace School_Library
         public async Task<IActionResult> Index()
         {
             var school_LibraryDbContext = _context.Checkin_outs.Include(c => c.Staff).Include(c => c.Student);
+
            
             return View(await school_LibraryDbContext.ToListAsync());
         }
@@ -50,8 +51,8 @@ namespace School_Library
         // GET: Checkin_out/Create
         public IActionResult Create()
         {
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent");
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "NameStaff");
             return View();
         }
 
@@ -64,11 +65,12 @@ namespace School_Library
         {
             if (ModelState.IsValid)
             {
+                
                 _context.Checkin_outs.Add(checkin_out);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "NameStaff", "NameStaff", checkin_out.StaffID);
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "NameStaff", checkin_out.StaffID);
             return View(checkin_out);
         }
 
@@ -85,7 +87,8 @@ namespace School_Library
             {
                 return NotFound();
             }
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", checkin_out.StaffID);
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent");
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "NameStaff");
             return View(checkin_out);
         }
 
@@ -121,7 +124,8 @@ namespace School_Library
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", checkin_out.StaffID);
+            
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "NameStaff", checkin_out.StaffID);
             return View(checkin_out);
         }
 
@@ -134,8 +138,6 @@ namespace School_Library
             }
 
             var checkin_out = await _context.Checkin_outs
-                .Include(c => c.Staff)
-                .Include(c => c.Student)
                 
                 .FirstOrDefaultAsync(m => m.Checkin_outID == id);
             if (checkin_out == null)

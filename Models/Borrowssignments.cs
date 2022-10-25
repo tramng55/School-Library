@@ -5,8 +5,6 @@ namespace School_Library.Models
 {
     public class BorrowAssignment 
     {
-
-        
         public int BorrowAssignmentID { get; set; } 
         public int BookID { get; set; }
         public int StudentID { get; set; }
