@@ -118,8 +118,8 @@ namespace School_Library.Migrations
                     b.Property<string>("NameStudent")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("StudentID", "BookID");
 

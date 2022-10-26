@@ -1,6 +1,6 @@
-﻿namespace School_Library.Models.BookViewModel
+﻿namespace School_Library.Common
 {
-    public class EditBorrowAssignment
+    public class StatusBorrowAssignment
     {
         public int Id { get; set; }
         public string Name { get; set; }

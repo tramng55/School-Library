@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace School_Library.Migrations
 {
-    public partial class Init_Database : Migration
+    public partial class Init_database : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -189,7 +189,7 @@ namespace School_Library.Migrations
                     BorrowAssignmentID = table.Column<int>(type: "int", nullable: false),
                     NameBook = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     NameStudent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {

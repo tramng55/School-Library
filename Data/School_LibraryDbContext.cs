@@ -41,7 +41,7 @@ namespace School_Library.Data
                  .HasKey(c => new { c.AuthorID, c.BookID });
 
             modelBuilder.Entity<BorrowAssignment>()
-                 .HasKey(c => new { c.StudentID, c.BookID });
+                 .HasKey(c => new { c.StudentID, c.BookID, c.Status });
 
         }
 

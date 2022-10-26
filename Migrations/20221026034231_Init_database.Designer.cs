@@ -12,8 +12,8 @@ using School_Library.Data;
 namespace School_Library.Migrations
 {
     [DbContext(typeof(School_LibraryDbContext))]
-    [Migration("20220928044408_Init_Database")]
-    partial class Init_Database
+    [Migration("20221026034231_Init_database")]
+    partial class Init_database
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,8 +120,8 @@ namespace School_Library.Migrations
                     b.Property<string>("NameStudent")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("StudentID", "BookID");
 
