@@ -1,4 +1,4 @@
-﻿@model School_Library.Models.Checkin_out
+﻿@model School_Library.Models.BookViewModel.EditCheckin_outBookViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -12,15 +12,15 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Checkin_outID" />
+           @* <input type="hidden" asp-for="Checkin_outID" />
             <div class="form-group">
-                <label asp-for="Student" class="control-label"></label>
-                <select asp-for="Student" class="form-control" asp-items="ViewBag.StudentID"></select>
+                <label asp-for="StudentID" class="control-label"></label>
+                <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentID"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Staff" class="control-label"></label>
-                <select asp-for="Staff" class="form-control" asp-items="ViewBag.StaffID"></select>
-            </div>
+                <label asp-for="StaffID" class="control-label"></label>
+                <select asp-for="StaffID" class="form-control" asp-items="ViewBag.StaffID"></select>
+            </div>*@
             <div class="form-group">
                 <label asp-for="To" class="control-label"></label>
                 <input asp-for="To" class="form-control" />

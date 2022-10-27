@@ -22,10 +22,16 @@ namespace School_Library.Controllers
             _context = context;
             statusBorrowAssignments.Add(new StatusBorrowAssignment
             {
-                Id = 1, 
-               
+                Id = 1,
+                Name = "ee"
 
-            }) ;
+            });
+            statusBorrowAssignments.Add(new StatusBorrowAssignment
+            {
+                Id = 1,
+                Name = "bb"
+
+            });
         }
 
         // GET: BorrowAssignments
@@ -56,13 +62,12 @@ namespace School_Library.Controllers
         }
 
         // GET: BorrowAssignments/Create
-        public   IActionResult Create()
+        public IActionResult Create()
         {
-            ViewData["Status"] = new SelectList(statusBorrowAssignments,  "Id", "Name");
-            ViewData["BookID"] = new SelectList(_context.Books, "NameBook", "NameBook");
-            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent");
+            ViewData["Status"] = new SelectList(statusBorrowAssignments, "Id", "Name");
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
 
-            
             return View();
         }
 
@@ -71,20 +76,25 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(BorrowAssignment borrowAssignment)
+        public async Task<IActionResult> Create(CreateBorrowAssignmentViewModel createBorrowAssignmentViewModel)
         {
             if (ModelState.IsValid)
             {
-              
+                var borrowAssignment = new BorrowAssignment();
+                borrowAssignment.BookID = createBorrowAssignmentViewModel.BookID;
+                borrowAssignment.StudentID = createBorrowAssignmentViewModel.StudentID;
+                borrowAssignment.Status = createBorrowAssignmentViewModel.Status;
+                await _context.BorrowAssignments.AddAsync(borrowAssignment);
+
                 _context.Add(borrowAssignment);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            
-            ViewData["BookID"] = new SelectList(_context.Books, "NameBook", "NameBook", borrowAssignment.BookID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent", borrowAssignment.StudentID);
 
-            return View(borrowAssignment);
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID", createBorrowAssignmentViewModel.BookID);
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", createBorrowAssignmentViewModel.StudentID);
+
+            return View(createBorrowAssignmentViewModel);
         }
 
         // GET: BorrowAssignments/Edit/5
@@ -95,15 +105,21 @@ namespace School_Library.Controllers
                 return NotFound();
             }
 
-            var borrowAssignment = await _context.BorrowAssignments.FirstOrDefaultAsync(x => x.BorrowAssignmentID == id);
+            var borrowAssignment = await _context.BorrowAssignments
+                .Include(x => x.Book).Include(x => x.Student)
+                .FirstOrDefaultAsync(x => x.BorrowAssignmentID == id);
             if (borrowAssignment == null)
             {
                 return NotFound();
             }
             ViewData["Status"] = new SelectList(statusBorrowAssignments, "Id", "Name");
-            ViewData["BookID"] = new SelectList(_context.Books, "NameBook", "NameBook");
-            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent");
-            return View(borrowAssignment);
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID");
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
+
+            var editBorrowAssignmentViewModel = new EditBorrowAssignmentViewModel();
+            
+            
+            return View(editBorrowAssignmentViewModel);
         }
 
         // POST: BorrowAssignments/Edit/5
@@ -111,23 +127,21 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BookID,StudentID,Status")] BorrowAssignment borrowAssignment)
+        public async Task<IActionResult> Edit(int id, EditBorrowAssignmentViewModel editBorrowAssignmentViewModel)
         {
-            if (id != borrowAssignment.StudentID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(borrowAssignment);
+                    var findBorrowAssignment = await _context.BorrowAssignments.FindAsync(id);
+                    findBorrowAssignment.Status = editBorrowAssignmentViewModel.Status;
+                    _context.BorrowAssignments.Update(findBorrowAssignment);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!BorrowAssignmentExists(borrowAssignment.StudentID))
+                    if (!BorrowAssignmentExists())
                     {
                         return NotFound();
                     }
@@ -138,10 +152,18 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID", borrowAssignment.BookID);
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", borrowAssignment.StudentID);
-            return View(borrowAssignment);
+            ViewData["Status"] = new SelectList(statusBorrowAssignments, "Id", "Name", editBorrowAssignmentViewModel.Status);
+            //ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID", editBorrowAssignmentViewModel.BookID);
+            //ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", editBorrowAssignmentViewModel.StudentID);
+            return View(editBorrowAssignmentViewModel);
         }
+
+        private bool BorrowAssignmentExists()
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         // GET: BorrowAssignments/Delete/5
         public async Task<IActionResult> Delete(int? id)
@@ -172,7 +194,10 @@ namespace School_Library.Controllers
             {
                 return Problem("Entity set 'School_LibraryDbContext.BorrowAssignments'  is null.");
             }
-            var borrowAssignment = await _context.BorrowAssignments.FindAsync(id);
+            var borrowAssignment = await _context.BorrowAssignments
+                .Include(x => x.Book)
+                .Include(x => x.Student)
+                .FirstOrDefaultAsync(m => m.BorrowAssignmentID == id);
             if (borrowAssignment != null)
             {
                 _context.BorrowAssignments.Remove(borrowAssignment);

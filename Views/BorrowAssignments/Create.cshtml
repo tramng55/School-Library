@@ -1,9 +1,9 @@
-﻿@model  School_Library.Models.BorrowAssignment
+﻿@model School_Library.Models.BookViewModel.CreateBorrowAssignmentViewModel
 
 
 @{
     ViewData["Title"] = "Create";
-    
+
 }
 
 <h1>Create</h1>
@@ -14,46 +14,43 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
             <div class="form-group">
-                <label asp-for="Book" class="control-label"></label>
-                 <select asp-for="Book" class="form-control" asp-items="ViewBag.BookID"></select>
+                <label asp-for="StudentID" class="control-label"></label>
+                <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentID"></select>
             </div>
             <div class="form-group">
-                <label asp-for="Student" class="control-label"></label>
-                <select asp-for="Student" class="form-control" asp-items="ViewBag.StudentID"></select>
+                <label asp-for="BookID" class="control-label"></label>
+                <select asp-for="BookID" class="form-control" asp-items="ViewBag.BookID"></select>
             </div>
+           
             @*<table class="table">
-                <thead>
-                    <tr>
-                    <th> Status </th>
-                </thead>
-                <tbody>
-                    @for (var i = 0; i < 
-                    {
-                         <tr class="">
-                             <td>
-                                  @Html.DisplayFor(mode)
-                             </td>
-                             <td>
-
-                             </td>
-                         </tr>
-
-
-                    }
-                    *@
-@*
-                </tbody>
+            <thead>
+            <tr>
+            <th> Status </th>
+            </thead>
+            <tbody>
+            @for (var i = 0; i <
+            {
+            <tr class="">
+            <td>
+            @Html.DisplayFor(mode)
+            </td>
+            <td>
+            </td>
+            </tr>
+            }
+            *@
+            @*
+            </tbody>
             </table>*@
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
                 <select asp-for="Status" class="form-control" asp-items="ViewBag.Status"></select>
             </div>
             <div class="form-group">
-                  <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-            
+
         </form>
     </div>
 </div>
@@ -64,6 +61,5 @@
 
 @section Scripts {
     @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+        await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
     }
