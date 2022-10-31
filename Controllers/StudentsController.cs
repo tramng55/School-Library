@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.AuthorViewModel;
+using School_Library.Models.StudentViewModel;
 
 namespace School_Library.Controllers
 {
@@ -87,16 +89,21 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( Student student)
+        public async Task<IActionResult> Create(CreateStudentViewModel createStudentViewModel)
         {
             if (ModelState.IsValid)
             {
+                var student = new Student();
+                student.NameStudent = createStudentViewModel.NameStudent;
+                student.Dayofbirth = createStudentViewModel.Dayofbirth;
+                student.PhoneNumber = createStudentViewModel.PhoneNumber;
+                await _context.Students.AddAsync(student);
                 _context.Add(student);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent", student.StudentID);
-            return View(student);
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "NameStudent", createStudentViewModel.StudentID);
+            return View(createStudentViewModel);
         }
 
         // GET: Students/Edit/5
@@ -121,23 +128,25 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,  Student student)
+        public async Task<IActionResult> Edit(int id, EditStudentViewModel editStudentViewModel)
         {
-            if (id != student.StudentID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(student);
+                    var findStudent = await _context.Students.FindAsync(id);
+                    
+                    findStudent.NameStudent = editStudentViewModel.NameStudent;
+                    findStudent.Dayofbirth = editStudentViewModel.Dayofbirth;
+                    findStudent.PhoneNumber = editStudentViewModel.PhoneNumber;
+
+                    _context.Update(findStudent);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentExists(student.StudentID))
+                    if (!StudentExists())
                     {
                         return NotFound();
                     }
@@ -148,8 +157,13 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "NameStudent", "NameStudent", student.StudentID);
-            return View(student);
+            
+            return View(editStudentViewModel);
+        }
+
+        private bool StudentExists()
+        {
+            throw new NotImplementedException();
         }
 
         // GET: Students/Delete/5

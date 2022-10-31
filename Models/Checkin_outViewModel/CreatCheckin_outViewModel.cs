@@ -1,6 +1,6 @@
-﻿namespace School_Library.Models.BookViewModel
+﻿namespace School_Library.Models.Checkin_outViewModel
 {
-    public class CreatCheckin_outBookViewModel
+    public class CreatCheckin_outViewModel
     {
         public int StudentID { get; set; }
         public int StaffID { get; set; }

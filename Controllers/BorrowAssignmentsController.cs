@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
-using School_Library.Models.BookViewModel;
+using School_Library.Models.BorrowAssignmentViewModel;
 
 namespace School_Library.Controllers
 {

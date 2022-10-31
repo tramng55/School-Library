@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.CategoryViewModel;
+using School_Library.Models.ProducerViewModel;
 
 namespace School_Library.Controllers
 {
@@ -84,15 +86,22 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProducerID,NameProducer,Address,Email,Status")] Producer producer)
+        public async Task<IActionResult> Create(CreateProducerViewModel createProducerViewModel)
         {
             if (ModelState.IsValid)
             {
+                var producer = new Producer();
+                producer.ProducerID = createProducerViewModel.ProducerID;
+                producer.NameProducer = createProducerViewModel.NameProducer;
+                producer.Address = createProducerViewModel.Address;
+                producer.Email = createProducerViewModel.Email;
+                await _context.producers.AddAsync(producer);
                 _context.Add(producer);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(producer);
+            ViewData["ProducerID"] = new SelectList(_context.producers, "NameProducer", "NameProducer", createProducerViewModel.ProducerID);
+            return View(createProducerViewModel);
         }
 
         // GET: Producers/Edit/5
@@ -108,7 +117,10 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
-            return View(producer);
+
+            var editProducerViewModel = new EditProducerViewModel();
+
+            return View(editProducerViewModel);
         }
 
         // POST: Producers/Edit/5
@@ -116,23 +128,23 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProducerID,NameProducer,Address,Email,Status")] Producer producer)
+        public async Task<IActionResult> Edit(int id, EditProducerViewModel editProducerViewModel)
         {
-            if (id != producer.ProducerID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(producer);
+                    var findProducer = await _context.producers.FindAsync(id);
+                    findProducer.NameProducer = editProducerViewModel.NameProducer;
+                    findProducer.Address = editProducerViewModel.Address;
+                    findProducer.Email = editProducerViewModel.Email;
+                    _context.producers.Update(findProducer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProducerExists(producer.ProducerID))
+                    if (!ProducerExists())
                     {
                         return NotFound();
                     }
@@ -143,7 +155,12 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(producer);
+            return View(editProducerViewModel);
+        }
+
+        private bool ProducerExists()
+        {
+            throw new NotImplementedException();
         }
 
         // GET: Producers/Delete/5

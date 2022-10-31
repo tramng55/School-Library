@@ -1,4 +1,4 @@
-﻿namespace School_Library.Models.BookViewModel
+﻿namespace School_Library.Models.BorrowAssignmentViewModel
 {
     public class CreateBorrowAssignmentViewModel
     {

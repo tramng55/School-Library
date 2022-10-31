@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using School_Library.Data;
 using School_Library.Models;
-using School_Library.Models.BookViewModel;
+using School_Library.Models.Checkin_outViewModel;
 
 namespace School_Library
 {
@@ -63,24 +63,24 @@ namespace School_Library
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreatCheckin_outBookViewModel creatCheckin_outBookViewModel)
+        public async Task<IActionResult> Create(CreatCheckin_outViewModel creatCheckin_outViewModel)
         {
             if (ModelState.IsValid)
             {
                 var checkin_out = new Checkin_out();
-                checkin_out.StudentID = creatCheckin_outBookViewModel.StudentID;
-                checkin_out.StaffID = creatCheckin_outBookViewModel.StaffID;
-                checkin_out.To = creatCheckin_outBookViewModel.To;
-                checkin_out.From = creatCheckin_outBookViewModel.From;
+                checkin_out.StudentID = creatCheckin_outViewModel.StudentID;
+                checkin_out.StaffID = creatCheckin_outViewModel.StaffID;
+                checkin_out.To = creatCheckin_outViewModel.To;
+                checkin_out.From = creatCheckin_outViewModel.From;
                 await _context.Checkin_outs.AddAsync(checkin_out);
 
                 _context.Add(checkin_out);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", creatCheckin_outBookViewModel.StudentID);
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", creatCheckin_outBookViewModel.StaffID);
-            return View(creatCheckin_outBookViewModel);
+            ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID", creatCheckin_outViewModel.StudentID);
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", creatCheckin_outViewModel.StaffID);
+            return View(creatCheckin_outViewModel);
         }
 
         // GET: Checkin_out/Edit/5
@@ -101,7 +101,7 @@ namespace School_Library
             ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
             ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID");
             
-            var editCheckin_outBookViewModel = new EditCheckin_outBookViewModel();
+            var editCheckin_outBookViewModel = new EditCheckin_outViewModel();
             
 
             return View(editCheckin_outBookViewModel);
@@ -112,7 +112,7 @@ namespace School_Library
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, EditCheckin_outBookViewModel editCheckin_outBookViewModel)
+        public async Task<IActionResult> Edit(int id, EditCheckin_outViewModel editCheckin_outViewModel)
         {
 
             if (ModelState.IsValid)
@@ -120,8 +120,8 @@ namespace School_Library
                 try
                 {
                     var findCheckin_out = await _context.Checkin_outs.FindAsync(id);
-                    findCheckin_out.To = editCheckin_outBookViewModel.To;
-                    findCheckin_out.From = editCheckin_outBookViewModel.From;
+                    findCheckin_out.To = editCheckin_outViewModel.To;
+                    findCheckin_out.From = editCheckin_outViewModel.From;
                     _context.Checkin_outs.Update(findCheckin_out);
                     await _context.SaveChangesAsync();
                 }
@@ -140,7 +140,7 @@ namespace School_Library
             }
 
             //ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID", editCheckin_outBookViewModel.StaffID);
-            return View(editCheckin_outBookViewModel);
+            return View(editCheckin_outViewModel);
         }
 
         private bool Checkin_outExists()

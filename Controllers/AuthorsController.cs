@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.AuthorViewModel;
 using School_Library.Models.BookViewModel;
 using static System.Reflection.Metadata.BlobBuilder;
 
@@ -38,7 +39,7 @@ namespace School_Library.Controllers
             ViewData["CurrentFilter"] = searchString;
 
             var authors = from s in _context.Authors
-                        select s;
+                          select s;
             if (!String.IsNullOrEmpty(searchString))
             {
                 authors = authors.Where(s => s.NameAuthor.Contains(searchString));
@@ -84,10 +85,11 @@ namespace School_Library.Controllers
         // GET: Authors/Create
         public IActionResult Create()
         {
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID");
             ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID");
             return View();
 
-            
+
         }
 
         // POST: Authors/Create
@@ -95,16 +97,21 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( Author author)
+        public async Task<IActionResult> Create(CreateAuthorViewModel createAuthorViewModel)
         {
             if (ModelState.IsValid)
             {
-                await _context.AddAsync(author);
+                var author = new Author();
+                author.AuthorID = createAuthorViewModel.AuthorID;
+                author.NameAuthor = createAuthorViewModel.NameAuthor;
+                author.NameBook = createAuthorViewModel.NameBook;
+                await _context.Authors.AddAsync(author);
+                _context.Add(author);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-           
-            return View(author);
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID", createAuthorViewModel.AuthorID);
+            return View(createAuthorViewModel);
         }
 
         // GET: Authors/Edit/5
@@ -116,39 +123,40 @@ namespace School_Library.Controllers
             }
 
             var author = await _context.Authors.FindAsync(id);
+                
             if (author == null)
             {
                 return NotFound();
             }
-            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID", author.AuthorID);
-            return View(author);
+            ViewData["BookID"] = new SelectList(_context.Books, "BookID", "BookID");
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "AuthorID");
+
+            var editAuthorViewModel = new EditAuthorViewModel();
+
+            return View(editAuthorViewModel);
         }
         // POST: Authors/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,  Author author)
+        public async Task<IActionResult> Edit(int id, EditAuthorViewModel editAuthorViewModel)
         {
-            if (id != author.AuthorID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
                     var findAuthor = await _context.Authors.FindAsync(id);
-                    findAuthor.NameBook = author.NameBook;
-                    findAuthor.NameAuthor = author.NameAuthor;
+                    findAuthor.AuthorID = editAuthorViewModel.AuthorID;
+                    findAuthor.NameBook = editAuthorViewModel.NameBook;
+                    findAuthor.NameAuthor = editAuthorViewModel.NameAuthor;
                     _context.Authors.Update(findAuthor);
-                    //_context.Update(author);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AuthorExists(author.AuthorID))
+                    if (!AuthorExists())
                     {
                         return NotFound();
                     }
@@ -159,7 +167,13 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(author);
+            ViewData["AuthorID"] = new SelectList(_context.Authors, "AuthorID", "NameAuthor", editAuthorViewModel.AuthorID);
+            return View(editAuthorViewModel);
+        }
+
+        private bool AuthorExists()
+        {
+            throw new NotImplementedException();
         }
 
         // GET: Authors/Delete/5
@@ -194,14 +208,14 @@ namespace School_Library.Controllers
             {
                 _context.Authors.Remove(author);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AuthorExists(int id)
         {
-          return _context.Authors.Any(e => e.AuthorID == id);
+            return _context.Authors.Any(e => e.AuthorID == id);
         }
     }
 }

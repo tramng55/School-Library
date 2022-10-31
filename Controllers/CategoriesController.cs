@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.CategoryViewModel;
+using School_Library.Models.Checkin_outViewModel;
 
 namespace School_Library.Controllers
 {
@@ -88,16 +90,20 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryID,NameCategory")] Category category)
+        public async Task<IActionResult> Create(CreateCategoryViewModel createCategoryViewModel)
         {
             if (ModelState.IsValid)
             {
+                var category = new Category();
+                category.NameCategory = createCategoryViewModel.NameCategory;
+                await _context.Categories.AddAsync(category);
+
                 _context.Add(category);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryID"] = new SelectList(_context.Categories, "NameCategory", "NameCategory", category.CategoryID);
-            return View(category);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "NameCategory", "NameCategory", createCategoryViewModel.CategoryID);
+            return View(createCategoryViewModel);
         }
 
         // GET: Categories/Edit/5
@@ -113,7 +119,11 @@ namespace School_Library.Controllers
             {
                 return NotFound();
             }
-            return View(category);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "NameCategory", "NameCategory");
+
+            var editCategoryViewModel = new EditCategoryViewModel();
+
+            return View(editCategoryViewModel);
         }
 
         // POST: Categories/Edit/5
@@ -121,23 +131,22 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryID,NameCategory")] Category category)
+        public async Task<IActionResult> Edit(int id, EditCategoryViewModel editCategoryViewModel)
         {
-            if (id != category.CategoryID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(category);
+                    var findCategory = await _context.Categories.FindAsync(id);
+                    findCategory.NameCategory = editCategoryViewModel.NameCategory;
+
+                    _context.Categories.Update(findCategory);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.CategoryID))
+                    if (!CategoryExists())
                     {
                         return NotFound();
                     }
@@ -148,7 +157,13 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            ViewData["CategoryID"] = new SelectList(_context.Categories, "NameCategory", "NameCategory", editCategoryViewModel.CategoryID);
+            return View(editCategoryViewModel);
+        }
+
+        private bool CategoryExists()
+        {
+            throw new NotImplementedException();
         }
 
         // GET: Categories/Delete/5

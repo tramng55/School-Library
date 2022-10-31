@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using School_Library.Common;
 using School_Library.Data;
 using School_Library.Models;
+using School_Library.Models.StaffViewModel;
 
 namespace School_Library.Controllers
 {
@@ -86,16 +87,21 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StaffID,NameStaff,Dayofbirth,PhoneNumber")] Staff staff)
+        public async Task<IActionResult> Create(CreateStaffViewModel createStaffViewModel)
         {
             if (ModelState.IsValid)
             {
+                var staff = new Staff();
+                staff.NameStaff = createStaffViewModel.NameStaff;
+                staff.Dayofbirth = createStaffViewModel.Dayofbirth;
+                staff.PhoneNumber = createStaffViewModel.PhoneNumber;
+                await _context.Staffs.AddAsync(staff);
                 _context.Add(staff);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "NameStaff", "NameStaff", staff.StaffID);
-            return View(staff);
+            ViewData["StaffID"] = new SelectList(_context.Staffs, "NameStaff", "NameStaff", createStaffViewModel.StaffID);
+            return View(createStaffViewModel);
         }
 
         // GET: Staffs/Edit/5
@@ -112,7 +118,10 @@ namespace School_Library.Controllers
                 return NotFound();
             }
             ViewData["StaffID"] = new SelectList(_context.Staffs, "NameStaff", "NameStaff");
-            return View(staff);
+
+            var editStaffViewModel = new EditStaffViewModel();
+
+            return View(editStaffViewModel);
         }
 
         // POST: Staffs/Edit/5
@@ -120,23 +129,23 @@ namespace School_Library.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StaffID,NameStaff,Dayofbirth,PhoneNumber")] Staff staff)
+        public async Task<IActionResult> Edit(int id, EditStaffViewModel editStaffViewModel)
         {
-            if (id != staff.StaffID)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(staff);
+                    var findStaff = await _context.Staffs.FindAsync(id);
+                    findStaff.NameStaff = editStaffViewModel.NameStaff;
+                    findStaff.Dayofbirth = editStaffViewModel.Dayofbirth;
+                    findStaff.PhoneNumber = editStaffViewModel.PhoneNumber;
+                    _context.Update(findStaff);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StaffExists(staff.StaffID))
+                    if (!StaffExists())
                     {
                         return NotFound();
                     }
@@ -147,8 +156,12 @@ namespace School_Library.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["StaffID"] = new SelectList(_context.Staffs, "NameStaff", "NameStaff", staff.StaffID);
-            return View(staff);
+            return View(editStaffViewModel);
+        }
+
+        private bool StaffExists()
+        {
+            throw new NotImplementedException();
         }
 
         // GET: Staffs/Delete/5
