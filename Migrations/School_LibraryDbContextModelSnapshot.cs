@@ -34,7 +34,7 @@ namespace School_Library.Migrations
 
                     b.HasIndex("ProducersProducerID");
 
-                    b.ToTable("BookProducer", (string)null);
+                    b.ToTable("BookProducer");
                 });
 
             modelBuilder.Entity("School_Library.Models.Author", b =>
@@ -110,7 +110,10 @@ namespace School_Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("BorrowAssignmentID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BorrowAssignmentID"), 1L, 1);
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -147,7 +150,10 @@ namespace School_Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Checkin_outID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Checkin_outID"), 1L, 1);
 
                     b.Property<DateTime>("From")
                         .HasColumnType("datetime2");

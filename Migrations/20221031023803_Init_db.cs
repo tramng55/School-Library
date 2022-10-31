@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace School_Library.Migrations
 {
-    public partial class Init_database : Migration
+    public partial class Init_db : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -109,7 +109,8 @@ namespace School_Library.Migrations
                 {
                     StudentID = table.Column<int>(type: "int", nullable: false),
                     StaffID = table.Column<int>(type: "int", nullable: false),
-                    Checkin_outID = table.Column<int>(type: "int", nullable: false),
+                    Checkin_outID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     To = table.Column<DateTime>(type: "datetime2", nullable: false),
                     From = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -186,9 +187,8 @@ namespace School_Library.Migrations
                 {
                     BookID = table.Column<int>(type: "int", nullable: false),
                     StudentID = table.Column<int>(type: "int", nullable: false),
-                    BorrowAssignmentID = table.Column<int>(type: "int", nullable: false),
-                    NameBook = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NameStudent = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BorrowAssignmentID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

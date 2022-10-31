@@ -34,14 +34,14 @@ namespace School_Library.Data
             modelBuilder.Entity<AuthorBook>().ToTable("AuthorBook");
             modelBuilder.Entity<BorrowAssignment>().ToTable("BorrowAssignment");
 
-            modelBuilder.Entity<Checkin_out>()
-                .HasKey(c => new { c.StudentID, c.StaffID });
+            //modelBuilder.Entity<Checkin_out>()
+            //    .HasKey(c => new { c.StudentID, c.StaffID });
 
-            modelBuilder.Entity<AuthorBook>()
-                 .HasKey(c => new { c.AuthorID, c.BookID });
+            //modelBuilder.Entity<AuthorBook>()
+            //     .HasKey(c => new { c.AuthorID, c.BookID });
 
-            modelBuilder.Entity<BorrowAssignment>()
-                 .HasKey(c => new { c.StudentID, c.BookID });
+            //modelBuilder.Entity<BorrowAssignment>()
+            //     .HasKey(c => new { c.StudentID, c.BookID });
 
         }
 

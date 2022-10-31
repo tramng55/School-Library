@@ -12,8 +12,8 @@ using School_Library.Data;
 namespace School_Library.Migrations
 {
     [DbContext(typeof(School_LibraryDbContext))]
-    [Migration("20221027033802_list")]
-    partial class list
+    [Migration("20221031023803_Init_db")]
+    partial class Init_db
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -112,7 +112,10 @@ namespace School_Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("BorrowAssignmentID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BorrowAssignmentID"), 1L, 1);
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -149,7 +152,10 @@ namespace School_Library.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Checkin_outID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Checkin_outID"), 1L, 1);
 
                     b.Property<DateTime>("From")
                         .HasColumnType("datetime2");

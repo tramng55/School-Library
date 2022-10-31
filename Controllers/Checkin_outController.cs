@@ -100,7 +100,9 @@ namespace School_Library
             }
             ViewData["StudentID"] = new SelectList(_context.Students, "StudentID", "StudentID");
             ViewData["StaffID"] = new SelectList(_context.Staffs, "StaffID", "StaffID");
+            
             var editCheckin_outBookViewModel = new EditCheckin_outBookViewModel();
+            
 
             return View(editCheckin_outBookViewModel);
         }

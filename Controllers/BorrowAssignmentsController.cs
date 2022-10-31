@@ -28,7 +28,7 @@ namespace School_Library.Controllers
             });
             statusBorrowAssignments.Add(new StatusBorrowAssignment
             {
-                Id = 1,
+                Id = 2,
                 Name = "bb"
 
             });
